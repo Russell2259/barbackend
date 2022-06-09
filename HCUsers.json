@@ -1,0 +1,47 @@
+{
+        "title": "BAR Userdata",
+        "active": "true",
+        "logininfo": [
+        {
+            "name": "Russell Krebs",
+            "username": "RK72259",
+            "password": "BirdsAreEvil",
+            "status": "BAR High Council"
+        },
+        {
+            "name": "Thomas Robert",
+            "username": "</>",
+            "password": "BirdsAreEvil",
+            "status": "BAR High Council"
+        },
+        {
+            "name": "Seamus Butler",
+            "username": "BUrp._.",
+            "password": "BirdsAreEvil",
+            "status": "BAR High Council"
+        },
+        {
+            "name": "Samuel Cash",
+            "username": "dogecoin4",
+            "password": "BirdsAreEvil",
+            "status": "BAR High Council"
+        },
+        {
+            "username": "<{YEET*CC}>",
+            "password": "BirdsAreEvil",
+            "status": "BAR High Council"
+        },
+        {
+            "name": "Kaitlyn Tolman",
+            "username": "kt252424",
+            "password": "BirdsAreEvil",
+            "status": "BAR High Council"
+        },
+        {
+            "name": "Ethan Reeves",
+            "username": "Ethan",
+            "password": "BirdsAreEvil",
+            "status": "BAR High Council"
+        }
+    ]
+}
