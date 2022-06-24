@@ -8,7 +8,7 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" />
     <style>
-        iframe{
+        .iframe{
             position:fixed;
             width:100vw;
             height:100vh;
@@ -19,7 +19,7 @@
      </style>    
      </head>
      <body>
-     <iframe scr="https://incog.dev"></iframe>
+     <iframe class="iframe" scr="https://incog.dev"></iframe>
      </body>
      </html>
 ]]></Content>
