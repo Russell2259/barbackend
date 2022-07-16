@@ -50,6 +50,8 @@ fetch('https://russell2259.github.io/barbackend/KMResources.json')
                 } else {
                     loadcontainer.remove();
                     overlay.remove();
+                    document.getElementById('KeyManager').remove();
+                    document.body.style = ''
                 }
             })
             .catch((err) => {
