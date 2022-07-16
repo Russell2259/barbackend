@@ -17,7 +17,7 @@ var loadertext = document.createElement("p");
 loadertext.innerText = 'Loading...'
 loadcontainer.appendChild(loadertext);
 
-fetch('https://raw.githubusercontent.com/Russell2259/barbackend/main/KMResources.json')
+fetch('https://russell2259.github.io/barbackend/KMResources.json')
     .then(function (resp) {
         return resp.json();
     })
@@ -38,7 +38,7 @@ fetch('https://raw.githubusercontent.com/Russell2259/barbackend/main/KMResources
                 .join('');
         };
         const file = location.pathname.substring(location.pathname.lastIndexOf("/") + 1);
-        const key = crypt('AUTHkey', file);
+        const key = crypt('AUTHkey', file)
         fetch(`https://raw.githubusercontent.com/Russell2259/barbackend/main/Key${key}.json`)
             .then(function (resp) {
                 return resp.json();
@@ -46,15 +46,17 @@ fetch('https://raw.githubusercontent.com/Russell2259/barbackend/main/KMResources
             .then(function (key) {
                 let iFrameDetection = (window === window.parent) ? false : true;
                 const loggedin = localStorage.getItem('active');
-                if (loggedin || !iFrameDetection || key.location === crypt('AUTHkeychecker', file)) {
-                    document.write('Unable to process request');
+                if (!loggedin === 'true' || !iFrameDetection || !key.location === crypt('AUTHkeychecker', file)) {
+                    document.write('Stop Trying');
+                } else {
+                    loadcontainer.remove();
+                    overlay.remove();
                 }
             })
             .catch((err) => {
-                document.write('Unable to process request');
+                document.write(err);
             });
     })
     .catch((err) => {
-        document.write('Unable to process request');
+        document.write(err);
     });
-// loadcontainer.remove();
