@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,56 +8,114 @@
     <title>Loading...</title>
     <script src="https://unpkg.com/peerjs@1.4.5/dist/peerjs.min.js"></script>
 </head>
+
 <body>
     <script>
         const queryString = window.location.search;
         const urlParams = new URLSearchParams(queryString);
         const token = urlParams.get('token')
+        const type = urlParams.get('type')
         const hosturl = window.location.href;
-        if (token === '' || token === null || token === undefined) {
-            document.write('Invalid token');
+        if (token === '' || token === null || token === undefined || type === '' || type === null || type === undefined) {
+            document.write('Invalid parameters');
         } else {
-            let peer;
-            peer = new Peer();
-            peer.on('open', id => {
-                connection(peer.connect(token), true);
-            });
-            peer.on('connection', conn => connection(conn));
-            function connection(conn) {
-                conn.on('open', () => {
-                    conn.send(hosturl);
-                    conn.on('data', data => {
-                        const decrypt = (salt, encoded) => {
-                            const textToChars = (text) => text.split("").map((c) => c.charCodeAt(0));
-                            const applySaltToChar = (code) => textToChars(salt).reduce((a, b) => a ^ b, code);
-                            return encoded
-                                .match(/.{1,2}/g)
-                                .map((hex) => parseInt(hex, 16))
-                                .map(applySaltToChar)
-                                .map((charCode) => String.fromCharCode(charCode))
-                                .join("");
-                        };
-                        const message = decrypt(token, data)
-                        if (message.includes('err')) {
-                            const err = message.replace('err', '');
-                            document.write(err);
-                        } else {
-                            if (message.includes('datarole')) {
-                                const role = message.replace('datarole', '')
-                                localStorage.setItem(token, role);
+            if (type === 'recive') {
+                let peer;
+                peer = new Peer();
+                peer.on('open', id => {
+                    connection(peer.connect(token));
+                });
+                peer.on('connection', conn => connection(conn));
+                function connection(conn) {
+                    conn.on('open', () => {
+                        conn.send(hosturl);
+                        conn.on('data', data => {
+                            const decrypt = (salt, encoded) => {
+                                const textToChars = (text) => text.split("").map((c) => c.charCodeAt(0));
+                                const applySaltToChar = (code) => textToChars(salt).reduce((a, b) => a ^ b, code);
+                                return encoded
+                                    .match(/.{1,2}/g)
+                                    .map((hex) => parseInt(hex, 16))
+                                    .map(applySaltToChar)
+                                    .map((charCode) => String.fromCharCode(charCode))
+                                    .join("");
+                            };
+                            const message = decrypt(token, data)
+                            if (message.includes('err')) {
+                                const err = message.replace('err', '');
+                                document.write(err);
                             } else {
+                                if (message.includes('status')) {
+                                    const role = message.replace('status', '')
+                                    localStorage.setItem('status' + token, role);
+                                } else {
+                                }
+                                localStorage.setItem('currenttoken', token);
+                                peer.destroy();
                             }
-                            localStorage.setItem('currenttoken', token);
-                            peer.destroy();
-                        }
+                        });
                     });
-                });
 
-                conn.on("close", () => {
-                    document.write('The connection has been closed');
-                });
+                    conn.on("close", () => {
+                        document.write('The connection has been closed');
+                    });
+                }
+            } else {
+                if (type === 'send') {
+                    let peer;
+                    peer = new Peer();
+                    peer.on("open", (id) => {
+                        connection(peer.connect(token));
+                    });
+                    peer.on('connection', (conn) => connection(conn));
+                    function connection(conn) {
+                        conn.on("open", () => {
+                            const crypt = (salt, text) => {
+                                const textToChars = (text) => text.split("").map((c) => c.charCodeAt(0));
+                                const byteHex = (n) => ("0" + Number(n).toString(16)).substr(-2);
+                                const applySaltToChar = (code) => textToChars(salt).reduce((a, b) => a ^ b, code);
+
+                                return text
+                                    .split("")
+                                    .map(textToChars)
+                                    .map(applySaltToChar)
+                                    .map(byteHex)
+                                    .join("");
+                            };
+                            conn.on('data', (message) => {
+                                fetch('https://raw.githubusercontent.com/Russell2259/barbackend/main/allowedauthconn.json')
+                                    .then(function (resp) {
+                                        return resp.json();
+                                    })
+                                    .then(function (conndata) {
+                                        let allowed = conndata.allowedauthlist.includes(message)
+                                        if (allowed) {
+                                            const savedToken = localStorage.getItem('currenttoken');
+                                            if (savedToken === null || savedToken === undefined || savedToken === '') {
+                                                conn.send(crypt(token, "errClient needs login"));
+                                                document.write('An error occurred. Please refresh the page and try again');
+                                            } else {
+                                                const savedStatus = localStorage.getItem('status' + savedToken);
+                                                conn.send(crypt(token, "status" + savedStatus));
+                                            }
+                                        } else {
+                                            conn.send(crypt(token, "errUnauthorized connection"));
+                                            document.write('An error occurred. Please refresh the page and try again');
+                                        }
+                                    });
+                            });
+                        });
+
+                        conn.on("close", () => {
+                            document.write('The connection has been closed');
+                        });
+                    }
+                } else {
+                    document.write('Invalid parameters');
+                }
             }
         }
     </script>
 </body>
+
 </html>
