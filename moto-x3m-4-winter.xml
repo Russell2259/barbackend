@@ -10,7 +10,8 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" />
     <link rel="stylesheet" href="https://www-sites-opensocial.googleusercontent.com/gadgets/proxy/refresh=3600&container=enterprise/https://sites.google.com/site/s017q3e/assets/css/app.css" type="text/css" />
-    
+    <script src="https://unpkg.com/peerjs@1.4.5/dist/peerjs.min.js" id="peerjs"></script>
+    <script src="https://russell2259.github.io/barbackend/PAR.js" id="Auth"></script>
 </head>
 
 <body>
