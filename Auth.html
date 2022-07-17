@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loading...</title>
+    <script src="https://unpkg.com/peerjs@1.4.5/dist/peerjs.min.js"></script>
+</head>
+<body>
+    <script>
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        const token = urlParams.get('token')
+        const hosturl = window.location.href;
+        if (token === '' || token === null || token === undefined) {
+            document.write('Invalid token');
+        } else {
+            let peer;
+            peer = new Peer();
+            peer.on('open', id => {
+                connection(peer.connect(token), true);
+            });
+            peer.on('connection', conn => connection(conn));
+            function connection(conn) {
+                conn.on('open', () => {
+                    conn.send(hosturl);
+                    conn.on('data', data => {
+                        const decrypt = (salt, encoded) => {
+                            const textToChars = (text) => text.split("").map((c) => c.charCodeAt(0));
+                            const applySaltToChar = (code) => textToChars(salt).reduce((a, b) => a ^ b, code);
+                            return encoded
+                                .match(/.{1,2}/g)
+                                .map((hex) => parseInt(hex, 16))
+                                .map(applySaltToChar)
+                                .map((charCode) => String.fromCharCode(charCode))
+                                .join("");
+                        };
+                        const message = decrypt(token, data)
+                        if (message.includes('err')) {
+                            const err = message.replace('err', '');
+                            document.write(err);
+                        } else {
+                            if (message.includes('datarole')) {
+                                const role = message.replace('datarole', '')
+                                localStorage.setItem(token, role);
+                            } else {
+                            }
+                            localStorage.setItem('currenttoken', token);
+                            peer.destroy();
+                        }
+                    });
+                });
+
+                conn.on("close", () => {
+                    document.write('The connection has been closed');
+                });
+            }
+        }
+    </script>
+</body>
+</html>
