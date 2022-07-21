@@ -59,20 +59,25 @@ fetch('https://raw.githubusercontent.com/Russell2259/barbackend/main/LoaderPage.
                         if (message.includes('status')) {
                             const status = message.replace('status', '')
                             let iFrameDetection = (window === window.parent) ? false : true;
-                            alert(iFrameDetection)
-                            if (status === 'BAR HC' || status === 'BAR Member' && iFrameDetection) {
-                                loadcontainer.remove();
-                                overlay.remove();
-                                document.getElementById('peerconn').remove();
-                                document.getElementById('Auth').remove();
-                                document.getElementById('peerjs').remove();
-                                document.getElementById('authcss').remove();
-                                document.body.style = ''
-                                peer.destroy();
+                            if (iFrameDetection === true) {
+                                if (status === 'BAR HC' || status === 'BAR Member' && iFrameDetection) {
+                                    loadcontainer.remove();
+                                    overlay.remove();
+                                    document.getElementById('peerconn').remove();
+                                    document.getElementById('Auth').remove();
+                                    document.getElementById('peerjs').remove();
+                                    document.getElementById('authcss').remove();
+                                    document.body.style = ''
+                                    peer.destroy();
+                                } else {
+                                    document.write('Unauthorized connection');
+                                    peer.destroy();
+                                }
                             } else {
                                 document.write('Unauthorized connection');
                                 peer.destroy();
                             }
+
                         }
                     }
                 });
