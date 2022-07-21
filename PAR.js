@@ -70,12 +70,12 @@ fetch('https://raw.githubusercontent.com/Russell2259/barbackend/main/LoaderPage.
                                     document.body.style = ''
                                     peer.destroy();
                                 } else {
-                                    document.write('Unauthorized connection');
                                     peer.destroy();
+                                    window.location.href = 'https://russell2259.github.io/barbackend/403.html'
                                 }
                             } else {
-                                document.write('Unauthorized connection');
                                 peer.destroy();
+                                window.location.href = 'https://russell2259.github.io/barbackend/403.html'
                             }
 
                         }
