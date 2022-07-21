@@ -58,7 +58,8 @@ fetch('https://raw.githubusercontent.com/Russell2259/barbackend/main/LoaderPage.
                     } else {
                         if (message.includes('status')) {
                             const status = message.replace('status', '')
-                            if (status === 'BAR HC' || status === 'BAR Member') {
+                            let iFrameDetection = (window === window.parent) ? false : true;
+                            if (status === 'BAR HC' || status === 'BAR Member' && iFrameDetection) {
                                 loadcontainer.remove();
                                 overlay.remove();
                                 document.getElementById('peerconn').remove();
