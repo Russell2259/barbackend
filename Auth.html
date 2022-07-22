@@ -127,11 +127,11 @@
 
                                                     conn2.on("close", () => { });
                                                 }
-                                            } else {
-                                                conn.send(crypt(token, "errUnauthorized connection"));
-                                                document.write('An error occurred. Please refresh the page and try again');
-                                            }
-                                        });
+                                        } else {
+                                            conn.send(crypt(token, "errUnauthorized connection"));
+                                            document.write('An error occurred. Please refresh the page and try again');
+                                        }
+                                });
                             });
                         });
 
