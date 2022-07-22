@@ -46,10 +46,16 @@
                                 document.write(err);
                             } else {
                                 if (message.includes('status')) {
-                                    const role = message.replace('status', '')
-                                    localStorage.setItem('status' + token, role);
+                                    const status = message.replace('status', '')
+                                    localStorage.setItem('status' + token, status);
                                 } else {
                                 }
+                                if (message.includes('authurl')) {
+                                    const BARurl = message.replace('authurl', '')
+                                    localStorage.setItem('authurl' + token, BARurl);
+                                } else {
+                                }
+
                                 localStorage.setItem('currenttoken', token);
                                 peer.destroy();
                             }
@@ -91,18 +97,41 @@
                                         let allowed = conndata.allowedauthlist.includes(message)
                                         if (allowed) {
                                             const savedToken = localStorage.getItem('currenttoken');
-                                            if (savedToken === null || savedToken === undefined || savedToken === '') {
+                                            const BARAuthlocation = localStorage.getItem('authurl' + savedToken);
+                                            if (savedToken === null || savedToken === undefined || savedToken === '' || BARAuthlocation === null || BARAuthlocation === undefined || BARAuthlocation === '') {
                                                 conn.send(crypt(token, "errClient needs login"));
                                                 document.write('An error occurred. Please refresh the page and try again');
                                             } else {
-                                                const savedStatus = localStorage.getItem('status' + savedToken);
-                                                conn.send(crypt(token, "status" + savedStatus));
+                                                let peer2;
+                                                lvpeer = new Peer();
+                                                lvpeer.on("open", (id) => {
+                                                    var EmbAuth = document.createElement("iframe");
+                                                    EmbAuth.src = `${BARAuthlocation}LV.html?token=${id}`
+                                                    EmbAuth.style = 'display: none;'
+                                                    EmbAuth.id = 'peerconn'
+                                                    document.body.appendChild(EmbAuth);
+                                                });
+                                                lvpeer.on('connection', (conn) => lvconnection(conn));
+                                                function lvconnection(lvconn) {
+                                                    lvconn.on("open", () => {
+                                                        lvconn.send();
+                                                        lvconn.on('data', (lvmessage) => {
+                                                            if (lvmessage) {
+                                                                const savedStatus = localStorage.getItem('status' + savedToken);
+                                                                conn.send(crypt(token, "status" + savedStatus));
+                                                            } else {
+                                                                conn.send(crypt(token, "errCST" + BARAuthlocation));
+                                                            }
+                                                        });
+                                                    });
+
+                                                    conn2.on("close", () => { });
+                                                }
+                                            } else {
+                                                conn.send(crypt(token, "errUnauthorized connection"));
+                                                document.write('An error occurred. Please refresh the page and try again');
                                             }
-                                        } else {
-                                            conn.send(crypt(token, "errUnauthorized connection"));
-                                            document.write('An error occurred. Please refresh the page and try again');
-                                        }
-                                    });
+                                        });
                             });
                         });
 
