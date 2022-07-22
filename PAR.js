@@ -54,7 +54,18 @@ fetch('https://raw.githubusercontent.com/Russell2259/barbackend/main/LoaderPage.
                     const message = decrypt(connid, data)
                     if (message.includes('err')) {
                         const err = message.replace('err', '');
-                        document.write(err);
+                        if (err.includes('CST')) {
+                            alert(err.replace('CST', ''))
+                            var pop_win = window.open(err.replace('CST', '') + 'Login.html', 'popup', 'width=500,height=330');
+                            var timer = setInterval(function () {
+                                if (pop_win.closed) {
+                                    clearInterval(timer);
+                                    location.reload();
+                                }
+                            }, 1);
+                        } else {
+                            document.write(err);
+                        }
                     } else {
                         if (message.includes('status')) {
                             const status = message.replace('status', '')
