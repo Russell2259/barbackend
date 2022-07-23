@@ -127,12 +127,17 @@
 
                                                     conn2.on("close", () => { });
                                                 }
-                                });
+                                            }
+                                        } else {
+                                            conn.send('errInvalid Connection Cert')
+                                            document.write('Invalid Connection Cert')
+                                        }
+                                    });
                             });
-                        });
 
-                        conn.on("close", () => {
-                            document.write('The connection has been closed');
+                            conn.on("close", () => {
+                                document.write('The connection has been closed');
+                            });
                         });
                     }
                 } else {
