@@ -99,6 +99,7 @@
                                             const savedToken = localStorage.getItem('currenttoken');
                                             const BARAuthlocation = localStorage.getItem('authurl' + savedToken);
                                             if (savedToken === null || savedToken === undefined || savedToken === '' || BARAuthlocation === null || BARAuthlocation === undefined || BARAuthlocation === '') {
+                                                alert(BARAuthlocation)
                                                 conn.send(crypt(token, "errClient needs login"));
                                                 document.write('An error occurred. Please refresh the page and try again');
                                             } else {
