@@ -45,16 +45,17 @@
                                 const err = message.replace('err', '');
                                 document.write(err);
                             } else {
-                                if (message.includes('status')) {
-                                    const status = message.replace('status', '')
-                                    localStorage.setItem('status' + token, status);
-                                } else {
-                                }
                                 if (message.includes('authurl')) {
                                     const BARurl = message.replace('authurl', '')
                                     localStorage.setItem('authurl' + token, BARurl);
                                 } else {
                                 }
+                                if (message.includes('status')) {
+                                    const status = message.replace('status', '')
+                                    localStorage.setItem('status' + token, status);
+                                } else {
+                                }
+
 
                                 localStorage.setItem('currenttoken', token);
                                 peer.destroy();
