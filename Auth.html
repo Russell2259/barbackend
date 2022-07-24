@@ -15,9 +15,10 @@
         const urlParams = new URLSearchParams(queryString);
         const token = urlParams.get('token')
         const type = urlParams.get('type')
+        window.history.pushState({}, '', window.location.pathname);
         const hosturl = window.location.href;
         if (token === '' || token === null || token === undefined || type === '' || type === null || type === undefined) {
-            document.write('Invalid parameters');
+            //window.location.href = 'https://russell2259.github.io/barbackend/403.html'
         } else {
             if (type === 'recive') {
                 let peer;
@@ -29,6 +30,7 @@
                 function connection(conn) {
                     conn.on('open', () => {
                         conn.send(hosturl);
+                        let messagesrecived = 0;
                         conn.on('data', data => {
                             const decrypt = (salt, encoded) => {
                                 const textToChars = (text) => text.split("").map((c) => c.charCodeAt(0));
@@ -45,20 +47,39 @@
                                 const err = message.replace('err', '');
                                 document.write(err);
                             } else {
-                                if (message.includes('authurl')) {
-                                    const BARurl = message.replace('authurl', '')
-                                    localStorage.setItem('authurl' + token, BARurl);
+                                if (message.includes('name')) {
+                                    const name = message.replace('name', '')
+                                    localStorage.setItem('name' + token, name);
+                                    messagesrecived++
                                 } else {
                                 }
+
+                                if (message.includes('role')) {
+                                    const role = message.replace('role', '')
+                                    localStorage.setItem('role' + token, role);
+                                    messagesrecived++
+                                } else {
+                                }
+
                                 if (message.includes('status')) {
                                     const status = message.replace('status', '')
                                     localStorage.setItem('status' + token, status);
+                                    messagesrecived++
                                 } else {
                                 }
-
-
-                                localStorage.setItem('currenttoken', token);
-                                peer.destroy();
+                                if (messagesrecived > 2) {
+                                    const tokenlog = localStorage.getItem('authlogger')
+                                    const savedStatus = localStorage.getItem('status' + token);
+                                    const savedName = localStorage.getItem('name' + token);
+                                    const savedRole = localStorage.getItem('role' + token);
+                                    if (!tokenlog || tokenlog === '') {
+                                        localStorage.setItem('authlogger', [`{ status: '${savedStatus}', timestamp: '${new Date()}', name: '${savedName}', role: '${savedRole}' }`]);
+                                    } else {
+                                        localStorage.setItem('authlogger', [`${tokenlog}, { status: '${savedStatus}', timestamp: '${new Date()}', name: '${savedName}', role: '${savedRole}' }`]);
+                                    }
+                                    localStorage.setItem('currenttoken', token);
+                                    peer.destroy();
+                                }
                             }
                         });
                     });
@@ -98,52 +119,27 @@
                                         let allowed = conndata.allowedauthlist.includes(message)
                                         if (allowed) {
                                             const savedToken = localStorage.getItem('currenttoken');
-                                            const BARAuthlocation = localStorage.getItem('authurl' + savedToken);
                                             if (savedToken === null || savedToken === undefined || savedToken === '' || BARAuthlocation === null || BARAuthlocation === undefined || BARAuthlocation === '') {
                                                 alert(BARAuthlocation)
                                                 conn.send(crypt(token, "errClient needs login"));
                                                 document.write('An error occurred. Please refresh the page and try again');
                                             } else {
-                                                let peer2;
-                                                lvpeer = new Peer();
-                                                lvpeer.on("open", (id) => {
-                                                    var EmbAuth = document.createElement("iframe");
-                                                    EmbAuth.src = `${BARAuthlocation}LV.html?token=${id}`
-                                                    EmbAuth.style = 'display: none;'
-                                                    EmbAuth.id = 'peerconn'
-                                                    document.body.appendChild(EmbAuth);
-                                                });
-                                                lvpeer.on('connection', (conn) => lvconnection(conn));
-                                                function lvconnection(lvconn) {
-                                                    lvconn.on("open", () => {
-                                                        lvconn.send();
-                                                        lvconn.on('data', (lvmessage) => {
-                                                            if (lvmessage) {
-                                                                const savedStatus = localStorage.getItem('status' + savedToken);
-                                                                conn.send(crypt(token, "status" + savedStatus));
-                                                            } else {
-                                                                conn.send(crypt(token, "errCST" + BARAuthlocation));
-                                                            }
-                                                        });
-                                                    });
-
-                                                    conn2.on("close", () => { });
-                                                }
+                                                const savedStatus = localStorage.getItem('status' + savedToken);
+                                                conn.send(crypt(token, "status" + savedStatus));
                                             }
-                                        } else {
-                                            conn.send('errInvalid Connection Cert')
-                                            document.write('Invalid Connection Cert')
                                         }
                                     });
                             });
+                        });
 
-                            conn.on("close", () => {
-                                document.write('The connection has been closed');
-                            });
+                        conn.on("close", () => {
+                            document.write('The connection has been closed');
                         });
                     }
                 } else {
-                    document.write('Invalid parameters');
+                    if (type === 'checklogs') {
+
+                    }
                 }
             }
         }
