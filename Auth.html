@@ -18,9 +18,10 @@
         window.history.pushState({}, '', window.location.pathname);
         const hosturl = window.location.href;
         if (token === '' || token === null || token === undefined || type === '' || type === null || type === undefined) {
-            //window.location.href = 'https://russell2259.github.io/barbackend/403.html'
+            window.location.href = 'https://russell2259.github.io/barbackend/403.html'
         } else {
             if (type === 'recive') {
+                //localStorage.setItem('authlogger', '');
                 let peer;
                 peer = new Peer();
                 peer.on('open', id => {
@@ -68,15 +69,6 @@
                                 } else {
                                 }
                                 if (messagesrecived > 2) {
-                                    const tokenlog = localStorage.getItem('authlogger')
-                                    const savedStatus = localStorage.getItem('status' + token);
-                                    const savedName = localStorage.getItem('name' + token);
-                                    const savedRole = localStorage.getItem('role' + token);
-                                    if (!tokenlog || tokenlog === '') {
-                                        localStorage.setItem('authlogger', [`{ status: '${savedStatus}', timestamp: '${new Date()}', name: '${savedName}', role: '${savedRole}' }`]);
-                                    } else {
-                                        localStorage.setItem('authlogger', [`${tokenlog}, { status: '${savedStatus}', timestamp: '${new Date()}', name: '${savedName}', role: '${savedRole}' }`]);
-                                    }
                                     localStorage.setItem('currenttoken', token);
                                     peer.destroy();
                                 }
@@ -119,8 +111,7 @@
                                         let allowed = conndata.allowedauthlist.includes(message)
                                         if (allowed) {
                                             const savedToken = localStorage.getItem('currenttoken');
-                                            if (savedToken === null || savedToken === undefined || savedToken === '' || BARAuthlocation === null || BARAuthlocation === undefined || BARAuthlocation === '') {
-                                                alert(BARAuthlocation)
+                                            if (savedToken === null || savedToken === undefined || savedToken === '') {
                                                 conn.send(crypt(token, "errClient needs login"));
                                                 document.write('An error occurred. Please refresh the page and try again');
                                             } else {
@@ -135,10 +126,6 @@
                         conn.on("close", () => {
                             document.write('The connection has been closed');
                         });
-                    }
-                } else {
-                    if (type === 'checklogs') {
-
                     }
                 }
             }
