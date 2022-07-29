@@ -1,8 +1,8 @@
 {
-  "stableVersion" : "1.7.2",
-  "download" : "https://drive.internxt.com/s/file/e62ff291d6cf7d3fbd69/d42b371d0f2a93ca3dc853e4ebcf69e3d8755007686b0910800ef5262f36385a",
+  "stableVersion" : "1.8.0",
+  "download" : "https://drive.google.com/uc?id=1BzfZ0WufMAlwfQTRE85HehXsR1nED-lv&export=download",
   "betaVersion" : "none",
-  "sandboxVersion" : "1.7.8sandbox",
+  "sandboxVersion" : "1.8.1sandbox",
   "status" : "We are currently developing the website's security to try and finish it before summer break comes.",
-  "message" : "You are using an outdated version of the BAR website please download the latest version click ok to continue."
+  "message" : "Please update to v1.8.0"
  }
